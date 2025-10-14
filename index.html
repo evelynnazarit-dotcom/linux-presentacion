@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalación de Kali Linux en VMware</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: white;
+            padding: 60px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: slideIn 0.5s ease;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin: -60px -60px 40px -60px;
+            border-radius: 0 0 20px 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+
+        .step:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .step-text {
+            flex: 1;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .team {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .member {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 20px;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            font-size: 1.1em;
+        }
+
+        .image-container {
+            margin: 20px 0;
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 450px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            object-fit: contain;
+        }
+
+        .image-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Portada -->
+        <div class="slide active">
+            <div class="slide-header">
+                <h1>🐧 Instalación y Configuración de Kali Linux en VMware</h1>
+                <p style="font-size: 1.2em; opacity: 0.9;">Guía Completa de Implementación</p>
+            </div>
+            <h2 style="text-align: center; margin-top: 50px;">Integrantes del Equipo</h2>
+            <div class="team">
+                <div class="member">👤 John Lazo</div>
+                <div class="member">👤 Carlos Ortiz</div>
+                <div class="member">👤 Yajaira Nazari</div>
+                <div class="member">👤 Kevin Murcia</div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Requisitos Previos -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>📋 Requisitos Previos</h1>
+            </div>
+            <h2>Antes de Comenzar</h2>
+            <ul>
+                <li>✅ Descargar la imagen ISO de Kali Linux</li>
+                <li>✅ Descomprimir el archivo ISO</li>
+                <li>✅ Instalar VMware Workstation</li>
+                <li>✅ Ejecutar VMware como administrador</li>
+            </ul>
+            <div class="highlight">
+                <strong>💡 Nota Importante:</strong> Asegúrate de tener suficiente espacio en disco y que tu procesador soporte virtualización (Intel VT-x o AMD-V).
+            </div>
+        </div>
+
+        <!-- Slide 3: Selección del SO -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>⚙️ Selección del Sistema Operativo</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                <div class="step-text">Seleccionar <strong>Linux</strong> como sistema operativo</div>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <div class="step-text">Elegir versión: <strong>Debian 10.x 64-bit</strong></div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_1.png" alt="Selección de SO">
+                <p class="image-caption">Selección del sistema operativo invitado</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Nombre de VM -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>📁 Nombre y Ubicación</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <div class="step-text">Asignar nombre: <strong>Kali Linux</strong></div>
+            </div>
+            <div class="step">
+                <span class="step-number">4</span>
+                <div class="step-text">Seleccionar ubicación de almacenamiento</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_2.png" alt="Nombre de VM">
+                <p class="image-caption">Configuración del nombre de la máquina virtual</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Especificaciones -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>⚙️ Especificaciones</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">5</span>
+                <div class="step-text">Revisar especificaciones básicas</div>
+            </div>
+            <div class="step">
+                <span class="step-number">6</span>
+                <div class="step-text">Opción de personalizar hardware</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_3.png" alt="Especificaciones">
+                <p class="image-caption">Resumen de configuración de hardware</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: VM Lista -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🚀 Máquina Virtual Lista</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">7</span>
+                <div class="step-text">VM creada exitosamente</div>
+            </div>
+            <div class="step">
+                <span class="step-number">8</span>
+                <div class="step-text">Iniciar con <strong>"Play virtual machine"</strong></div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_4.png" alt="VM Lista">
+                <p class="image-caption">Máquina virtual lista para iniciar</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Menú Boot -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>💿 Menú de Instalación</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">9</span>
+                <div class="step-text">Seleccionar <strong>"Graphical Install"</strong></div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_5.png" alt="Menú Boot">
+                <p class="image-caption">Menú de instalación de Kali Linux</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Carga -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>⏳ Cargando Componentes</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">10</span>
+                <div class="step-text">Cargando componentes del instalador</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_6.png" alt="Cargando">
+                <p class="image-caption">Proceso de carga inicial</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Hostname -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🌐 Configuración de Red</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">11</span>
+                <div class="step-text">Ingresar nombre de host (hostname)</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_7.png" alt="Hostname">
+                <p class="image-caption">Configuración del nombre de la máquina</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Contraseña -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🔒 Configuración de Usuario</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">12</span>
+                <div class="step-text">Crear contraseña segura</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_8.png" alt="Contraseña">
+                <p class="image-caption">Configuración de contraseña del usuario</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Particionado 1 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>💾 Particionado (1/3)</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">13</span>
+                <div class="step-text">Cargando herramientas de particionado</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_9.png" alt="Particionado">
+                <p class="image-caption">Cargando componentes de particionado</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Particionado 2 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>💾 Particionado (2/3)</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">14</span>
+                <div class="step-text">Seleccionar disco virtual</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_10.png" alt="Disco">
+                <p class="image-caption">Selección del disco para particionar</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Particionado 3 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>💾 Particionado (3/3)</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">15</span>
+                <div class="step-text">Revisar esquema de particiones</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_11.png" alt="Esquema">
+                <p class="image-caption">Resumen del esquema de particiones</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Confirmación -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>✅ Confirmación</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">16</span>
+                <div class="step-text">Confirmar escritura de cambios</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_12.png" alt="Confirmación">
+                <p class="image-caption">Confirmación para escribir cambios en disco</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Software -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>📦 Selección de Software</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">17</span>
+                <div class="step-text">Seleccionar paquetes a instalar</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_13.png" alt="Software">
+                <p class="image-caption">Selección de entorno de escritorio y herramientas</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: Instalación Completa -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🎉 Instalación Completada</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">18</span>
+                <div class="step-text">Instalación exitosa</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_14.png" alt="Completada">
+                <img src="Imagen_15.png" alt="Completada">
+                <p class="image-caption">Mensaje de instalación completada</p>
+            </div>
+        </div>
+
+        <!-- Slide 17: Brave -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🧪 Instalación de Brave</h1>
+            </div>
+            <div class="step">
+                <span class="step-number">19</span>
+                <div class="step-text">Instalación mediante terminal</div>
+            </div>
+            <div class="image-container">
+                <img src="Imagen_16.png" alt="Brave">
+                <img src="Imagen_17.png">
+                <img src="Imagen_18.png">
+                <p class="image-caption">Instalación de Brave Browser</p>
+            </div>
+        </div>
+
+        <!-- Slide 18: Conclusiones -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🎯 Conclusiones</h1>
+            </div>
+            <div class="highlight" style="background: #d4edda; border-color: #28a745;">
+                <h2 style="color: #155724;">Instalación Exitosa</h2>
+                <p style="font-size: 1.2em; line-height: 1.8;">
+                    Se completó exitosamente la instalación y configuración de Kali Linux en VMware.
+                </p>
+            </div>
+            <ul style="margin-top: 30px;">
+                <li>✅ Sistema operativo funcional</li>
+                <li>✅ Conectividad de red establecida</li>
+                <li>✅ Software adicional instalado</li>
+                <li>✅ Gestión de archivos verificada</li>
+            </ul>
+        </div>
+
+        <!-- Slide 19: Gracias -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>¡Gracias!</h1>
+            </div>
+            <div style="text-align: center; margin-top: 100px;">
+                <h2 style="font-size: 3em; margin-bottom: 30px;">🐧</h2>
+                <h2 style="font-size: 2.5em;">¿Preguntas?</h2>
+                <div class="team" style="margin-top: 50px;">
+                    <div class="member">John Lazo</div>
+                    <div class="member">Carlos Ortiz</div>
+                    <div class="member">Yajaira Nazari</div>
+                    <div class="member">Kevin Murcia</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="current">1</span> / <span id="total">19</span>
+    </div>
+
+    <div class="controls">
+        <button id="prevBtn" onclick="changeSlide(-1)">◀ Anterior</button>
+        <button id="nextBtn" onclick="changeSlide(1)">Siguiente ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current').textContent = currentSlide + 1;
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>
